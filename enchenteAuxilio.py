@@ -25,6 +25,9 @@ cel_namef = ""
 cel_cepf = ""
 cel_cepc = ""
 nro_end = 0
+cod_familia = 0
+nro_familia = 0
+
 linha = ""
 apenda = False
 lista = ()
@@ -41,14 +44,38 @@ colunaI = ""
 colunaL = ""
 colunaM = ""
 colunaO = ""
-
+# dados dos familiares
+colunaFC1 = ""
+colunaFN1 = ""
+colunaFC2 = ""
+colunaFN2 = ""
+colunaFC3 = ""
+colunaFN3 = ""
+colunaFC4 = ""
+colunaFN4 = ""
+colunaFC5 = ""
+colunaFN5 = ""
+colunaFC6 = ""
+colunaFN6 = ""
+colunaFC7 = ""
+colunaFN7 = ""
+colunaFC8 = ""
+colunaFN8 = ""
+colunaFC9 = ""
+colunaFN9 = ""
+colunaFC10 = ""
+colunaFN10 = ""
 
 strLinha = ""
+strLinhaCabec = "CPF_RESPONSAVEL" + ';' + "NOME_RESPONSAVEL" + ';' + "LOGRADOURO" + ';' + "NUMERO" + ';' + "COMPLEMENTO" + ';' + "BAIRRO" + ';' + "CEP" + ';' + "TELEFONE_RESPONSAVEL" + ';' + \
+                "CPF_MEMBRO1" + ';' + "NOME_MEMBRO1" + ';' + "CPF_MEMBRO2" + ';' + "NOME_MEMBRO2" + ';' + "CPF_MEMBRO3" + ';' + "NOME_MEMBRO3" + ';' + "CPF_MEMBRO4" + ';' + "NOME_MEMBRO4" + \
+                 ';' + "CPF_MEMBRO5" + ';' + "NOME_MEMBRO5" + ';' + "CPF_MEMBRO6" + ';' + "NOME_MEMBRO6" + ';' + "CPF_MEMBRO7" + ';' + "NOME_MEMBRO7" + ';' + "CPF_MEMBRO8" + ';' + "NOME_MEMBRO8" + \
+                 ';' + "CPF_MEMBRO9" + ';' + "NOME_MEMBRO9" + ';' + "CPF_MEMBRO10" + ';' + "NOME_MEMBRO10"
 strQuote = "'"
 strDblQuote = '"'
 
 # Funções 
-#--------------------
+#--------
 def validaCEP(cep, nro):
     
     if nro:
@@ -129,8 +156,8 @@ try:
     dfc = pd.read_excel('ceps1.xlsx')
 
     print ("Classificando as planilhas")
-#    dff.sort_values(by=['num_cep_logradouro_fam', 'cod_familiar_fam'], ascending=True, inplace=True, ignore_index=True)
-#    dfc.sort_values(by='Cep', ascending=True, inplace=True, ignore_index=True)
+    dff.sort_values(by=['num_cep_logradouro_fam', 'cod_familiar_fam'], ascending=True, inplace=True, ignore_index=True)
+    dfc.sort_values(by='CEPs', ascending=True, inplace=True, ignore_index=True)
 
 except Exception:
     raise
@@ -148,11 +175,21 @@ sheetc = wbc.active
 #----------------------
 print ("Filtrando as planilhas")
 try:
+    # grava cabecalho
+    arq_linhas.write(strLinhaCabec  + '\n')  
     apenda = False 
+    contador = 0
+    cod_familia = 0
     
-    for row in range(2, sheetf.max_row + 1):
+    for row in range(2, 100):              # sheetf.max_row + 1):
         int_Lidas = int_Lidas + 1
-            
+        
+        print("Cod familia => linha")
+        print(colunaA)  
+        print(cod_familia)
+        print(row)
+        print(contador)
+        # breakpoint()
         for column in "ABCDEFGHIJKLMNO":
             
             cell_namef = "{}{}".format(column, row)   
@@ -161,51 +198,68 @@ try:
             if celula == None: 
                 celula = "" 
  
-            if column == "A":
-                colunaA = celula
-            if column == "B":
+            if column == "A":     # codigo familia  
+                colunaA = celula   
+                cod_familia = celula
+            if column == "B":     # bairro 
                 colunaB = celula
-            elif column == "C":
+            elif column == "C":   # tipo logradouro 
                 colunaC = celula
-            elif column == "D":
+            elif column == "D":   # denominacao logrdouro
                 colunaD = celula
-            elif column == "E":    # logradouro 
+            elif column == "E":   # logradouro 
                 colunaE = celula
-            elif column == "F":    # nro logradouro
+            elif column == "F":   # nro logradouro
                 colunaF = celula
                 nro_end = celula 
-            elif column == "G":
+            elif column == "G":   # complemento
                 colunaG = celula
-            elif column == "H":    # cep 
+            elif column == "H":   # cep 
                 colunaH = celula
                 cel_cepf = celula    
                 apenda = validaCEP(celula, nro_end)    
-            elif column == "I":
+            elif column == "I":   # nro de pessoas na familia 
                 colunaI = celula
-            elif column == "J":
+                nro_familia = celula
+            elif column == "J":   # ddd
                 colunaJ = celula
-            elif column == "K":
+            elif column == "K":   # telefone
                 colunaK = celula
-            elif column == "L":
+            elif column == "L":   # cod familia membro
                 colunaL = celula
-            elif column == "M":
+            elif column == "M":   # nome familiar
                 colunaM = celula
-            elif column == "N":
+            elif column == "N":   # parentesco familiar
                 colunaN = celula
-            elif column == "O":
+            elif column == "O":   # cpf familiar 
                 colunaO = celula
 
+ 
+        # breakpoint()
         if apenda == True:
-            #breakpoint()
-            strLinha = strQuote + str(colunaA) + strQuote + ',' + strQuote + str(colunaB) + strQuote + ',' + strQuote + str(colunaC) + strQuote + ',' + \
-                   strQuote + str(colunaD) + strQuote + ',' + strQuote + str(colunaE) + strQuote + ',' + strQuote + str(colunaF) + strQuote + ',' + \
-                   strQuote + str(colunaG) + strQuote + ',' + strQuote + str(colunaH) + strQuote + ',' + strQuote + str(colunaI) + strQuote + ',' + \
-                   strQuote + str(colunaJ) + strQuote + ',' + strQuote + str(colunaK) + strQuote + ',' + strQuote + str(colunaL) + strQuote + ',' + \
-                   strQuote + str(colunaM) + strQuote + ',' + strQuote + str(colunaN) + ',' + strQuote + str(colunaO)
-            
-            arq_linhas.write(strLinha  + '\n')  
-            apenda = False 
-            int_Linhas = int_Linhas + 1
+            # breakpoint()
+            # agrupa por familia 
+            print("Cod familia => ")
+            print(colunaA)  
+            print(cod_familia)
+            print(contador)
+                  
+            strLinha = str(colunaO) + ';' + strQuote + str(colunaM) + strQuote + ';' + strQuote + str(colunaC) + " " + str(colunaD) + " " + str(colunaE) + strQuote + ';' + \
+                str(colunaF) + ';' + strQuote + str(colunaG) + strQuote + ';' + str(colunaB) + ';' + \
+                str(colunaH) + ';' + str(colunaJ) + str(colunaK) 
+
+            if cod_familia == colunaA:
+
+                if contador > 0 and contador <= 10:
+                    strLinha = strLinha + ';' + str(colunaO) + ';' + strQuote + str(colunaM)
+                    contador = contador + 1
+
+            else:            
+                arq_linhas.write(strLinha  + '\n')  
+                apenda = False 
+                int_Linhas = int_Linhas + 1
+                cod_familia = colunaA 
+                contador = 0
 
 except KeyError: 
     print ("Erro de atributo: "), arq_exec 
